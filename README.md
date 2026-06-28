@@ -1,6 +1,6 @@
 # LibraryAPI
 
-This repository is rewrite of my old repository rest api for library
+This repository is rewrite of my old repository rest api for library. This demonstrate of my code skills up.
 
 ## Differences description
 
@@ -19,7 +19,7 @@ Unlike the previous version, this one uses a PostgreSQL database rather than sto
 
 ## Сode limits
 
-This is a base of library API. It lacks user authorization and authentication, sorting search, test and more. But this is good work for CRUD operations in a books.
+This is a base of library API. It lacks user authorization and authentication, sorting search, tests and more. But this is work for CRUD operations in a books.
 
 ## For why i writy this
 
