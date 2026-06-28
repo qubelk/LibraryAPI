@@ -2,7 +2,8 @@ package dto
 
 import (
 	"library/pkg/model/book"
-	"time"
+
+	"github.com/google/uuid"
 )
 
 type CreateBookRequest struct {
@@ -17,17 +18,31 @@ type CreateBookResponse struct {
 	Book book.Book `json:"book"`
 }
 
+type AddPageRequest struct {
+	BookID  uuid.UUID `json:"book_id"`
+	Content string    `json:"content"`
+	Number  uint      `json:"number"`
+}
+
 type GetBookRequest struct {
 	Title string `json:"title" binding:"required"`
 }
 
 type GetBookResponse struct {
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Year        uint      `json:"year"`
-	PageCount   uint      `json:"page_count"`
-	Genre       string    `json:"genre"`
-	CreatedAt   time.Time `json:"created_at"`
+	Book book.Book `json:"book"`
+}
+
+type GetAllBookResponse struct {
+	Books []book.Book `json:"books"`
+}
+
+type GetPageRequest struct {
+	BookID uuid.UUID `json:"uuid" binding:"required"`
+	Number uint      `json:"page_number" binding:"required"`
+}
+
+type GetPageResponse struct {
+	Page book.Page `json:"page"`
 }
 
 type ReadBookRequest struct {

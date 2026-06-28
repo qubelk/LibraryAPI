@@ -23,7 +23,7 @@ func pageTable(ctx context.Context, pool *pgxpool.Pool) error {
 		number INT NOT NULL,
 		content TEXT NOT NULL,
 		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 	
 		UNIQUE(book_id, number)
 	);`
@@ -41,8 +41,8 @@ func bookTable(ctx context.Context, pool *pgxpool.Pool) error {
 		created_year INT NOT NULL,
 		total_pages INT NOT NULL DEFAULT 0,
 		genre VARCHAR(100) NOT NULL,
-		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+		created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 	
 		UNIQUE(title)
 	);`
@@ -71,12 +71,12 @@ func InitDB(url string) (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("failed to connection to database: %w", err)
 	}
 
-	if err := pageTable(ctx, pool); err != nil {
-		return nil, fmt.Errorf("failed to create books page table: %w", err)
-	}
-
 	if err := bookTable(ctx, pool); err != nil {
 		return nil, fmt.Errorf("failed to create books table: %w", err)
+	}
+
+	if err := pageTable(ctx, pool); err != nil {
+		return nil, fmt.Errorf("failed to create books page table: %w", err)
 	}
 
 	return pool, nil

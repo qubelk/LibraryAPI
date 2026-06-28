@@ -32,7 +32,7 @@ func (pg *pgLibraryRepository) Create(ctx context.Context, b *book.Book) error {
 	).Scan(&b.CreatedAt, &b.UpdatedAt)
 
 	if err != nil {
-		return fmt.Errorf("failed to create book: %w", err)
+		return fmt.Errorf("failed to execute create book query: %w", err)
 	}
 
 	return nil
@@ -54,7 +54,7 @@ func (pg *pgLibraryRepository) AddPage(ctx context.Context, p *book.Page) error 
 	).Scan(&p.CreatedAt, &p.UpdatedAt)
 
 	if err != nil {
-		return fmt.Errorf("failed to add page to book: %w", err)
+		return fmt.Errorf("failed to execute add page to book query: %w", err)
 	}
 
 	updateQuery := `
@@ -78,10 +78,6 @@ func (pg *pgLibraryRepository) AddPage(ctx context.Context, p *book.Page) error 
 }
 
 func (pg *pgLibraryRepository) GetByTitle(ctx context.Context, title string) (*book.Book, error) {
-	if title == "" {
-		return nil, fmt.Errorf("invalid title, it can't be empty")
-	}
-
 	getQuery := `SELECT * FROM books WHERE title = $1`
 
 	var b book.Book
@@ -100,7 +96,7 @@ func (pg *pgLibraryRepository) GetByTitle(ctx context.Context, title string) (*b
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to get book by title: %w", err)
+		return nil, fmt.Errorf("failed to execute get book by title query: %w", err)
 	}
 
 	return &b, nil
@@ -115,7 +111,7 @@ func (pg *pgLibraryRepository) GetAll(ctx context.Context) ([]book.Book, error) 
 			return nil, fmt.Errorf("no one books not found")
 		}
 
-		return nil, fmt.Errorf("failed to get all books: %w", err)
+		return nil, fmt.Errorf("failed to execute get all books query: %w", err)
 	}
 	defer rows.Close()
 
@@ -158,7 +154,7 @@ func (pg *pgLibraryRepository) GetPage(ctx context.Context, bookID uuid.UUID, pa
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to get page: %w", err)
+		return nil, fmt.Errorf("failed to execute get page query: %w", err)
 	}
 
 	return &p, nil
@@ -169,7 +165,7 @@ func (pg *pgLibraryRepository) Delete(ctx context.Context, bookID uuid.UUID) err
 
 	_, err := pg.pool.Exec(ctx, deleteQuery)
 	if err != nil {
-		return fmt.Errorf("failed to delete book: %w", err)
+		return fmt.Errorf("failed to execute delete book query: %w", err)
 	}
 
 	return nil
