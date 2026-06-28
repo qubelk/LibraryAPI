@@ -160,6 +160,111 @@ func (pg *pgLibraryRepository) GetPage(ctx context.Context, bookID uuid.UUID, pa
 	return &p, nil
 }
 
+func (pg *pgLibraryRepository) UpdateTitle(ctx context.Context, bookID uuid.UUID, title string) error {
+	updateQuery := `
+	UPDATE books
+	SET title = $1
+	WHERE id = $2;
+	`
+
+	_, err := pg.pool.Exec(
+		ctx,
+		updateQuery,
+		title,
+		bookID,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to execute update title query: %w", err)
+	}
+
+	updateQuery = `
+	INSERT INTO books (updated_at) VALUES (NOW()) WHERE id = $1
+	`
+
+	_, err = pg.pool.Exec(
+		ctx,
+		updateQuery,
+		bookID,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to execute update updated_at query: %w", err)
+	}
+
+	return nil
+}
+
+func (pg *pgLibraryRepository) UpdateDescription(ctx context.Context, bookID uuid.UUID, description string) error {
+	updateQuery := `
+	UPDATE books
+	SET description = $1
+	WHERE id = $2;
+	`
+
+	_, err := pg.pool.Exec(
+		ctx,
+		updateQuery,
+		description,
+		bookID,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to execute update description query: %w", err)
+	}
+
+	updateQuery = `
+	INSERT INTO books (updated_at) VALUES (NOW()) WHERE id = $1
+	`
+
+	_, err = pg.pool.Exec(
+		ctx,
+		updateQuery,
+		bookID,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to execute update updated_at query: %w", err)
+	}
+
+	return nil
+}
+
+func (pg *pgLibraryRepository) UpdateGenre(ctx context.Context, bookID uuid.UUID, genre string) error {
+	updateQuery := `
+	UPDATE books
+	SET genre = $1
+	WHERE id = $2;
+	`
+
+	_, err := pg.pool.Exec(
+		ctx,
+		updateQuery,
+		genre,
+		bookID,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to execute update genre query: %w", err)
+	}
+
+	updateQuery = `
+	INSERT INTO books (updated_at) VALUES (NOW()) WHERE id = $1
+	`
+
+	_, err = pg.pool.Exec(
+		ctx,
+		updateQuery,
+		bookID,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to execute update updated_at query: %w", err)
+	}
+
+	return nil
+}
+
 func (pg *pgLibraryRepository) Delete(ctx context.Context, bookID uuid.UUID) error {
 	deleteQuery := `DELETE FROM books WHERE id = $1`
 

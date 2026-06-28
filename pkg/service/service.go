@@ -88,6 +88,26 @@ func (ls *LibraryService) GetPage(ctx context.Context, req *dto.GetPageRequest) 
 	}, nil
 }
 
+func (ls *LibraryService) UpdateTitle(ctx context.Context, req *dto.UpdateTitleRequest) error {
+	if err := validate.Validate(req.Title, "tmp"); err != nil {
+		return fmt.Errorf("failed to validate request: %w", err)
+	}
+
+	return ls.repo.UpdateTitle(ctx, req.BookID, req.Title)
+}
+
+func (ls *LibraryService) UpdateDescription(ctx context.Context, req *dto.UpdateDescriptionRequest) error {
+	return ls.repo.UpdateDescription(ctx, req.BookID, req.Description)
+}
+
+func (ls *LibraryService) UpdateGenre(ctx context.Context, req *dto.UpdateGenreRequest) error {
+	if err := validate.Validate("tmp", req.Genre); err != nil {
+		return fmt.Errorf("failed to validate request: %w", err)
+	}
+
+	return ls.repo.UpdateGenre(ctx, req.BookID, req.Genre)
+}
+
 func (ls *LibraryService) Delete(ctx context.Context, bookID uuid.UUID) error {
 	if err := ls.repo.Delete(ctx, bookID); err != nil {
 		return fmt.Errorf("failed to delete book: %w", err)

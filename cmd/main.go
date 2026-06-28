@@ -37,11 +37,20 @@ func main() {
 	hand := handlers.New(serv)
 
 	r.POST("/", hand.Create)
-	r.POST("/:book_name/", hand.AddPage)
+	bookName := r.Group("/:book_name")
+	{
+		bookName.POST("/:book_name", hand.AddPage)
+		bookName.GET("/:book_name/read", hand.GetPage)
+		bookName.DELETE("/:book_name", hand.Delete)
+		update := r.Group("/update")
+		{
+			update.PATCH("/title", hand.UpdateTitle)
+			update.PATCH("/description", hand.UpdateDescription)
+			update.PATCH("/genre", hand.UpdateGenre)
+		}
+	}
 	r.GET("/", hand.GetByTitle)
 	r.GET("/", hand.GetAll)
-	r.GET("/:book_name/read", hand.GetPage)
-	r.DELETE("/:book_name", hand.Delete)
 
 	srv := http.Server{
 		Addr:    ":3000",

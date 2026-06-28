@@ -39,7 +39,7 @@ func (lh *LibraryHandlers) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusCreated, res)
 }
 
 func (lh *LibraryHandlers) AddPage(ctx *gin.Context) {
@@ -159,6 +159,117 @@ func (lh *LibraryHandlers) GetPage(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, resp)
+}
+
+func (lh *LibraryHandlers) UpdateTitle(ctx *gin.Context) {
+	name := ctx.Param("book_name")
+
+	res, err := lh.ls.GetByTitle(ctx, &dto.GetBookRequest{Title: name})
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "unknown book with this name",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	var req dto.UpdateTitleRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "invalid request",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	if err := lh.ls.UpdateTitle(ctx, &dto.UpdateTitleRequest{
+		BookID: res.Book.ID,
+		Title:  req.Title,
+	}); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "book title succesfully updated",
+	})
+}
+
+func (lh *LibraryHandlers) UpdateDescription(ctx *gin.Context) {
+	name := ctx.Param("book_name")
+
+	res, err := lh.ls.GetByTitle(ctx, &dto.GetBookRequest{Title: name})
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "unknown book with this name",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	var req dto.UpdateDescriptionRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "invalid request",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	if err := lh.ls.UpdateDescription(ctx, &dto.UpdateDescriptionRequest{
+		BookID:      res.Book.ID,
+		Description: req.Description,
+	}); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "book description succesfully updated",
+	})
+}
+
+func (lh *LibraryHandlers) UpdateGenre(ctx *gin.Context) {
+	name := ctx.Param("book_name")
+
+	res, err := lh.ls.GetByTitle(ctx, &dto.GetBookRequest{Title: name})
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "unknown book with this name",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	var req dto.UpdateGenreRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "invalid request",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	if err := lh.ls.UpdateGenre(ctx, &dto.UpdateGenreRequest{
+		BookID: res.Book.ID,
+		Genre:  req.Genre,
+	}); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+		})
+		logs.LogError(err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "book genre succesfully updated",
+	})
 }
 
 func (lh *LibraryHandlers) Delete(ctx *gin.Context) {

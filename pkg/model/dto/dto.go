@@ -54,3 +54,18 @@ type ReadBookResponse struct {
 	Title       string `json:"title"`
 	PageContent string `json:"page_content"`
 }
+
+type UpdateTitleRequest struct {
+	BookID uuid.UUID `json:"-"`
+	Title  string    `json:"title" binding:"required"`
+}
+
+type UpdateDescriptionRequest struct {
+	BookID      uuid.UUID `json:"-"`
+	Description string    `json:"description" binding:"required"`
+}
+
+type UpdateGenreRequest struct {
+	BookID uuid.UUID `json:"-"`
+	Genre  string    `json:"genre" binding:"required"`
+}
