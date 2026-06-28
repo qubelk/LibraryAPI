@@ -4,6 +4,7 @@ import (
 	"context"
 	"library/pkg/db"
 	"library/pkg/handlers"
+	"library/pkg/logs"
 	"library/pkg/service"
 	"log"
 	"net/http"
@@ -13,14 +14,21 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	logs.Init()
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
+
 	r := gin.Default()
 
-	conn, err := db.InitDB("")
+	conn, err := db.InitDB(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer conn.Close()
 
