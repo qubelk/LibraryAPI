@@ -18,7 +18,7 @@ import (
 func main() {
 	r := gin.Default()
 
-	conn, err := db.InitDB("postgres://postgres:swaga@localhost:5432/postgres")
+	conn, err := db.InitDB("")
 	if err != nil {
 		panic(err)
 	}
